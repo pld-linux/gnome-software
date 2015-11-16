@@ -1,3 +1,8 @@
+#
+# Conditional build:
+%bcond_without	fwupd	# firmware support via fwupd
+%bcond_with	limba	# Limba support
+#
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
@@ -8,11 +13,12 @@ Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/3.18/%{name}-%{version}.tar.xz
 # Source0-md5:	dc93107a8fb1a2cbda6faf144a6f4537
 URL:		https://wiki.gnome.org/Apps/Software
+%{?with_limba:BuildRequires:	Limba-devel >= 0.4.2}
 BuildRequires:	PackageKit-devel >= 1.0.9
 BuildRequires:	appstream-glib-devel >= 0.5.1
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	fwupd-devel
+%{?with_fwupd:BuildRequires:	fwupd-devel}
 BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.45.8
 BuildRequires:	gnome-common
@@ -23,7 +29,6 @@ BuildRequires:	intltool >= 0.35.0
 BuildRequires:	libsoup-devel >= 2.52
 BuildRequires:	libtool >= 2:2
 BuildRequires:	libxslt-progs
-#BuildRequires:	limba-devel >= 0.4.2
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel
 BuildRequires:	rpmbuild(macros) >= 1.311
@@ -57,6 +62,8 @@ rozszerzenia systemu.
 %{__autoheader}
 %{__automake}
 %configure \
+	--enable-firmware%{!?with_fwupd:=no} \
+	--enable-limba%{!?with_limba:=no} \
 	--disable-silent-rules \
 	--disable-static
 %{__make}
@@ -88,7 +95,28 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gnome-software
 /etc/xdg/autostart/gnome-software-service.desktop
 %dir %{_libdir}/gs-plugins-8
-%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_*.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_appstream.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_epiphany.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_fedora_tagger_ratings.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_fedora_tagger_usage.so
+%if %{with fwupd}
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_fwupd.so
+%endif
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_hardcoded-featured.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_icons.so
+%if %{with limba}
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_limba.so
+%endif
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_local-ratings.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_menu-spec-categories.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_menu-spec-refine.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_moduleset.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_packagekit.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_packagekit-history.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_packagekit-offline.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_packagekit-refine.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_packagekit-refresh.so
+%attr(755,root,root) %{_libdir}/gs-plugins-8/libgs_plugin_systemd-updates.so
 %{_datadir}/appdata/org.gnome.Software.appdata.xml
 %{_datadir}/dbus-1/services/org.freedesktop.PackageKit.service
 %{_datadir}/dbus-1/services/org.gnome.Software.service
