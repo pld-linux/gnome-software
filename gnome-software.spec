@@ -2,8 +2,10 @@
 # Conditional build:
 %bcond_without	flatpak		# Flatpak support
 %bcond_without	fwupd		# firmware support via fwupd
-%bcond_with	eos		# Endless OS updater support
-%bcond_with	packagekit	# PackageKit support
+%bcond_with	eos		# Endless OS updater support (broken as of 3.36.0)
+%bcond_without	malcontent	# parental control via libmalcontent
+%bcond_with	mogwai		# metered data support using Mogwai
+%bcond_without	packagekit	# PackageKit support
 %bcond_with	rpm		# rpm-ostree support
 %bcond_with	snap		# Snap support
 %bcond_with	ext_appstream	# external appstream support
@@ -11,12 +13,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.34.2
+Version:	3.36.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/3.34/%{name}-%{version}.tar.xz
-# Source0-md5:	cac03af2119c74db07eb21dcfc47fd76
+Source0:	https://ftp.gnome.org/pub/GNOME/sources/gnome-software/3.36/%{name}-%{version}.tar.xz
+# Source0-md5:	8c2410bcec0cfe2b1e47112d6d1d464d
 URL:		https://wiki.gnome.org/Apps/Software
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	appstream-glib-devel >= 0.7.14
@@ -35,17 +37,20 @@ BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.2.0
 %{?with_rpm:BuildRequires:	libdnf-devel}
+%{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
 BuildRequires:	libsecret-devel
 BuildRequires:	libsoup-devel >= 2.52.0
 BuildRequires:	libxmlb-devel >= 0.1.7
 BuildRequires:	libxslt-progs
-BuildRequires:	meson >= 0.46.0
+BuildRequires:	meson >= 0.47.0
+# mogwai-schedule-client-0
+%{?with_mogwai:BuildRequires:	mogwai-devel >= 0.2.0}
 BuildRequires:	ninja >= 1.5
 %if %{with eos} || %{with rpm}
 BuildRequires:	ostree-devel
 %endif
 BuildRequires:	pkgconfig
-%{?with_snap:BuildRequires:	pkgconfig(snapd-glib) >= 1.49}
+%{?with_snap:BuildRequires:	pkgconfig(snapd-glib) >= 1.50}
 BuildRequires:	polkit-devel
 %{?with_rpm:BuildRequires:	rpm-devel >= 4.?}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
@@ -58,6 +63,7 @@ BuildRequires:	valgrind
 BuildRequires:	xz
 Requires(post,postun):	glib2 >= 1:2.56.0
 Requires(post,postun):	gtk-update-icon-cache
+%{?with_packagekit:Requires:	PackageKit >= 1.1.0}
 Requires:	appstream-glib >= 0.7.14
 %{?with_flatpak:Requires:	flatpak-libs >= 1.0.4}
 %{?with_fwupd:Requires:	fwupd-libs >= 1.0.3}
@@ -68,8 +74,10 @@ Requires:	gsettings-desktop-schemas >= 3.11.5
 Requires:	gtk+3 >= 3.22.4
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.2.0
+%{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
 Requires:	libsoup >= 2.52
 Requires:	libxmlb >= 0.1.7
+%{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gs_plugins_dir	%{_libdir}/gs-plugins-13
@@ -119,11 +127,12 @@ Dokumentacja API wtyczek GNOME Software.
 	%{!?with_flatpak:-Dflatpak=false} \
 	%{!?with_fwupd:-Dfwupd=false} \
 	%{?with_eos:-Deos_updater=true} \
-	%{!?with_packagekit:-Dpackagekit=false} \
+	%{!?with_malcontent:-Dmalcontent=false} \
+	%{?with_mogwai:-Dmogwai=true} \
+	%{?with_packagekit:-Dpackagekit=true} \
 	%{?with_rpm:-Drpm_ostree=true} \
 	%{?with_snap:-Dsnap=true}
 # packagekit_autoremove?
-# mogwai? [BR: pkgconfig(mogwai-schedule-client-0) >= 0.2.0]
 
 %ninja_build -C build
 
@@ -152,7 +161,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS MAINTAINERS NEWS README.md
 %attr(755,root,root) %{_bindir}/gnome-software
-%attr(755,root,root) %{_bindir}/gnome-software-editor
 /etc/xdg/autostart/gnome-software-service.desktop
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
@@ -162,12 +170,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_desktop-menu-path.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dummy.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_epiphany.so
+%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-langpacks.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-pkgdb-collections.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora_langpacks.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_generic-updates.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-blacklist.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-featured.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-popular.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_icons.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_key-colors.so
@@ -179,7 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance-license.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_repos.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_rewrite-resource.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_shell-extensions.so
+#?%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_shell-extensions.so
 %dir %{_datadir}/app-info
 %dir %{_datadir}/app-info/xmls
 %{_datadir}/app-info/xmls/org.gnome.Software.Featured.xml
@@ -188,7 +194,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome-shell/search-providers/org.gnome.Software-search-provider.ini
 %{_datadir}/gnome-software
 %{_datadir}/metainfo/org.gnome.Software.appdata.xml
-%{_datadir}/metainfo/org.gnome.Software.Plugin.Epiphany.metainfo.xml
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Odrs.metainfo.xml
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
@@ -205,6 +210,9 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with fwupd}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fwupd.so
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Fwupd.metainfo.xml
+%endif
+%if %{with malcontent}
+%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_malcontent.so
 %endif
 %if %{with packagekit}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit.so
@@ -229,12 +237,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_desktopdir}/gnome-software-local-file.desktop
 %{_desktopdir}/org.gnome.Software.desktop
-%{_desktopdir}/org.gnome.Software.Editor.desktop
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
 %{_iconsdir}/hicolor/scalable/status/software-installed-symbolic.svg
 %{_iconsdir}/hicolor/symbolic/apps/org.gnome.Software-symbolic.svg
 %{_mandir}/man1/gnome-software.1*
-%{_mandir}/man1/gnome-software-editor.1*
 
 %files devel
 %defattr(644,root,root,755)
