@@ -13,12 +13,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.36.0
+Version:	3.36.1
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://ftp.gnome.org/pub/GNOME/sources/gnome-software/3.36/%{name}-%{version}.tar.xz
-# Source0-md5:	8c2410bcec0cfe2b1e47112d6d1d464d
+# Source0-md5:	e882d84859208bd27ddb89d043d3098d
 URL:		https://wiki.gnome.org/Apps/Software
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	appstream-glib-devel >= 0.7.14
