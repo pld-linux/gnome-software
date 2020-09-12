@@ -134,7 +134,7 @@ Dokumentacja API wtyczek GNOME Software.
 	%{?with_packagekit:-Dpackagekit=true} \
 	%{?with_rpm:-Drpm_ostree=true} \
 	%{?with_snap:-Dsnap=true} \
-	%{!?with_sysprof:-Dsysprof=false}
+	%{!?with_sysprof:-Dsysprof=disabled}
 # packagekit_autoremove?
 
 %ninja_build -C build
