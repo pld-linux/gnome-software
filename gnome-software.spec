@@ -9,16 +9,17 @@
 %bcond_with	rpm		# rpm-ostree support
 %bcond_with	snap		# Snap support
 %bcond_with	ext_appstream	# external appstream support
+%bcond_with	sysprof		# sysprof-capture support for profiling
 #
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.36.1
+Version:	3.38.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://ftp.gnome.org/pub/GNOME/sources/gnome-software/3.36/%{name}-%{version}.tar.xz
-# Source0-md5:	e882d84859208bd27ddb89d043d3098d
+Source0:	https://ftp.gnome.org/pub/GNOME/sources/gnome-software/3.38/%{name}-%{version}.tar.xz
+# Source0-md5:	b8a55e7c9ff146276bee18fc44d3cb70
 URL:		https://wiki.gnome.org/Apps/Software
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	appstream-glib-devel >= 0.7.14
@@ -56,6 +57,7 @@ BuildRequires:	polkit-devel
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	sqlite3-devel >= 3
+%{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-glib-devel
 # pkgconfig(valgrind)
@@ -131,7 +133,8 @@ Dokumentacja API wtyczek GNOME Software.
 	%{?with_mogwai:-Dmogwai=true} \
 	%{?with_packagekit:-Dpackagekit=true} \
 	%{?with_rpm:-Drpm_ostree=true} \
-	%{?with_snap:-Dsnap=true}
+	%{?with_snap:-Dsnap=true} \
+	%{!?with_sysprof:-Dsysprof=false}
 # packagekit_autoremove?
 
 %ninja_build -C build
@@ -173,7 +176,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-langpacks.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-pkgdb-collections.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_generic-updates.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-blacklist.so
+%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-blocklist.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-popular.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_icons.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_key-colors.so
@@ -185,7 +188,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance-license.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_repos.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_rewrite-resource.so
-#?%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_shell-extensions.so
 %dir %{_datadir}/app-info
 %dir %{_datadir}/app-info/xmls
 %{_datadir}/app-info/xmls/org.gnome.Software.Featured.xml
@@ -244,6 +246,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libgnomesoftware.a
 %{_includedir}/gnome-software
 %{_pkgconfigdir}/gnome-software.pc
 
