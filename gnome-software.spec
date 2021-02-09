@@ -14,12 +14,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.38.0
+Version:	3.38.1
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://ftp.gnome.org/pub/GNOME/sources/gnome-software/3.38/%{name}-%{version}.tar.xz
-# Source0-md5:	b8a55e7c9ff146276bee18fc44d3cb70
+Source0:	https://download.gnome.org/sources/gnome-software/3.38/%{name}-%{version}.tar.xz
+# Source0-md5:	491f404c1decbcaa71d4ec47342c7fa7
 URL:		https://wiki.gnome.org/Apps/Software
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	appstream-glib-devel >= 0.7.14
@@ -55,7 +55,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel
 %{?with_rpm:BuildRequires:	rpm-devel >= 4.?}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sqlite3-devel >= 3
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
@@ -113,6 +113,7 @@ Pliki nagłówkowe do tworzenia wtyczek GNOME Software.
 Summary:	GNOME Software plugin API documentation
 Summary(pl.UTF-8):	Dokumentacja API wtyczek GNOME Software
 Group:		Documentation
+%{?noarchpackage}
 
 %description apidocs
 GNOME Software plugin API documentation.
