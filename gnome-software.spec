@@ -113,7 +113,7 @@ Pliki nagłówkowe do tworzenia wtyczek GNOME Software.
 Summary:	GNOME Software plugin API documentation
 Summary(pl.UTF-8):	Dokumentacja API wtyczek GNOME Software
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description apidocs
 GNOME Software plugin API documentation.
