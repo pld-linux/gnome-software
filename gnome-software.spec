@@ -14,12 +14,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.38.1
+Version:	3.38.2
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/3.38/%{name}-%{version}.tar.xz
-# Source0-md5:	491f404c1decbcaa71d4ec47342c7fa7
+# Source0-md5:	daa929cc1df3b9ec55ac03b7f4792a68
 URL:		https://wiki.gnome.org/Apps/Software
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	appstream-glib-devel >= 0.7.14
@@ -53,6 +53,7 @@ BuildRequires:	ostree-devel
 BuildRequires:	pkgconfig
 %{?with_snap:BuildRequires:	pkgconfig(snapd-glib) >= 1.50}
 BuildRequires:	polkit-devel
+BuildRequires:	rpm-build >= 4.6
 %{?with_rpm:BuildRequires:	rpm-devel >= 4.?}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.752
