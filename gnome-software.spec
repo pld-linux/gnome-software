@@ -14,15 +14,15 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	3.38.2
+Version:	40.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/3.38/%{name}-%{version}.tar.xz
-# Source0-md5:	daa929cc1df3b9ec55ac03b7f4792a68
+Source0:	https://download.gnome.org/sources/gnome-software/40/%{name}-%{version}.tar.xz
+# Source0-md5:	967e73976cc6bf229bd37749a94a9e4b
 URL:		https://wiki.gnome.org/Apps/Software
+BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
-BuildRequires:	appstream-glib-devel >= 0.7.14
 BuildRequires:	docbook-style-xsl-nons
 %{?with_flatpak:BuildRequires:	flatpak-devel >= 1.0.4}
 %{?with_fwupd:BuildRequires:	fwupd-devel >= 1.0.3}
@@ -30,16 +30,15 @@ BuildRequires:	gdk-pixbuf2-devel >= 2.32.0
 BuildRequires:	gettext-its-metainfo
 BuildRequires:	gettext-tools >= 0.19.7
 BuildRequires:	glib2-devel >= 1:2.56.0
-BuildRequires:	gnome-desktop-devel >= 3.18
 BuildRequires:	gnome-online-accounts-devel
-BuildRequires:	gsettings-desktop-schemas-devel >= 3.11.5
+BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
 BuildRequires:	gtk+3-devel >= 3.22.4
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.2.0
 %{?with_rpm:BuildRequires:	libdnf-devel}
+BuildRequires:	libhandy1-devel >= 1.0.2
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
-BuildRequires:	libsecret-devel
 BuildRequires:	libsoup-devel >= 2.52.0
 BuildRequires:	libxmlb-devel >= 0.1.7
 BuildRequires:	libxslt-progs
@@ -57,7 +56,6 @@ BuildRequires:	rpm-build >= 4.6
 %{?with_rpm:BuildRequires:	rpm-devel >= 4.?}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.752
-BuildRequires:	sqlite3-devel >= 3
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-glib-devel
@@ -66,24 +64,24 @@ BuildRequires:	valgrind
 BuildRequires:	xz
 Requires(post,postun):	glib2 >= 1:2.56.0
 Requires(post,postun):	gtk-update-icon-cache
+Requires:	AppStream >= 0.14.0
 %{?with_packagekit:Requires:	PackageKit >= 1.1.0}
-Requires:	appstream-glib >= 0.7.14
 %{?with_flatpak:Requires:	flatpak-libs >= 1.0.4}
 %{?with_fwupd:Requires:	fwupd-libs >= 1.0.3}
 Requires:	gdk-pixbuf2 >= 2.32.0
 Requires:	glib2 >= 1:2.56.0
-Requires:	gnome-desktop >= 3.18
-Requires:	gsettings-desktop-schemas >= 3.11.5
+Requires:	gsettings-desktop-schemas >= 3.18.0
 Requires:	gtk+3 >= 3.22.4
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.2.0
+Requires:	libhandy1 >= 1.0.2
 %{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
 Requires:	libsoup >= 2.52
 Requires:	libxmlb >= 0.1.7
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		gs_plugins_dir	%{_libdir}/gs-plugins-13
+%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-16
 
 %description
 GNOME Software lets you install and update applications and system
@@ -98,7 +96,7 @@ Summary:	Header files for GNOME Software plugins development
 Summary(pl.UTF-8):	Pliki nagłówkowe do tworzenia wtyczek GNOME Software
 Group:		Development/Libraries
 # doesn't require base
-Requires:	appstream-glib-devel >= 0.7.14
+Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
 Requires:	glib2-devel >= 1:2.56.0
 Requires:	gtk+3-devel >= 3.22.4
@@ -127,6 +125,7 @@ Dokumentacja API wtyczek GNOME Software.
 
 %build
 %meson build \
+	--default-library=shared \
 	%{?with_ext_appstream:-Dexternal_appstream=true} \
 	%{!?with_flatpak:-Dflatpak=false} \
 	%{!?with_fwupd:-Dfwupd=false} \
@@ -164,15 +163,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS MAINTAINERS NEWS README.md
+%doc AUTHORS NEWS README.md
 %attr(755,root,root) %{_bindir}/gnome-software
 /etc/xdg/autostart/gnome-software-service.desktop
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
+%dir %{_libdir}/gnome-software
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so
 %dir %{gs_plugins_dir}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_appstream.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_desktop-categories.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_desktop-menu-path.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dummy.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-langpacks.so
@@ -181,8 +180,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-blocklist.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-popular.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_icons.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_key-colors.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_key-colors-metadata.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_modalias.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_odrs.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_os-release.so
@@ -202,7 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
 %endif
-%if %{with ext_appstgream}
+%if %{with ext_appstream}
 %attr(755,root,root) %{_libexecdir}/gnome-software-install-appstream
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_external-appstream.so
 %{_datadir}/polkit-1/actions/org.gnome.software.external-appstream.policy
@@ -241,6 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_desktopdir}/gnome-software-local-file.desktop
 %{_desktopdir}/org.gnome.Software.desktop
+%{_iconsdir}/hicolor/scalable/actions/carousel-arrow-*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
 %{_iconsdir}/hicolor/scalable/status/software-installed-symbolic.svg
 %{_iconsdir}/hicolor/symbolic/apps/org.gnome.Software-symbolic.svg
@@ -248,7 +246,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libgnomesoftware.a
 %{_includedir}/gnome-software
 %{_pkgconfigdir}/gnome-software.pc
 
