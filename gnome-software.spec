@@ -14,12 +14,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	40.4
+Version:	41.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/40/%{name}-%{version}.tar.xz
-# Source0-md5:	0cded9143e9f0d85e2f63714ca0929a2
+Source0:	https://download.gnome.org/sources/gnome-software/41/%{name}-%{version}.tar.xz
+# Source0-md5:	75558b242f80a5d7e429ecf5249f765d
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
@@ -37,7 +37,7 @@ BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.2.0
 %{?with_rpm:BuildRequires:	libdnf-devel}
-BuildRequires:	libhandy1-devel >= 1.0.2
+BuildRequires:	libhandy1-devel >= 1.2.0
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
 BuildRequires:	libsoup-devel >= 2.52.0
 BuildRequires:	libxmlb-devel >= 0.1.7
@@ -74,7 +74,7 @@ Requires:	gsettings-desktop-schemas >= 3.18.0
 Requires:	gtk+3 >= 3.22.4
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.2.0
-Requires:	libhandy1 >= 1.0.2
+Requires:	libhandy1 >= 1.2.0
 %{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
 Requires:	libsoup >= 2.52
 Requires:	libxmlb >= 0.1.7
@@ -169,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
 %dir %{_libdir}/gnome-software
-%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.16
 %dir %{gs_plugins_dir}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_appstream.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
@@ -181,7 +181,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-popular.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_icons.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_modalias.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_odrs.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_os-release.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance-license.so
@@ -195,7 +194,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gnome-shell/search-providers/org.gnome.Software-search-provider.ini
 %{_datadir}/gnome-software
 %{_datadir}/metainfo/org.gnome.Software.appdata.xml
-%{_datadir}/metainfo/org.gnome.Software.Plugin.Odrs.metainfo.xml
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
 %endif
@@ -217,15 +215,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %if %{with packagekit}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-history.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-local.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-offline.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-proxy.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-refine.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-refine-repos.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-refresh.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-upgrade.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-url-to-app.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_systemd-updates.so
 %{_datadir}/dbus-1/services/org.freedesktop.PackageKit.service
 %endif
@@ -238,6 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_desktopdir}/gnome-software-local-file.desktop
 %{_desktopdir}/org.gnome.Software.desktop
+%{_iconsdir}/hicolor/scalable/actions/app-remove-symbolic.svg
 %{_iconsdir}/hicolor/scalable/actions/carousel-arrow-*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
 %{_iconsdir}/hicolor/scalable/status/software-installed-symbolic.svg
@@ -246,6 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so
 %{_includedir}/gnome-software
 %{_pkgconfigdir}/gnome-software.pc
 
