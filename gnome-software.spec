@@ -1,8 +1,12 @@
+# TODO:
+# - rpm-ostree support
+# - use gtk4-update-icon-cache
 #
 # Conditional build:
 %bcond_without	flatpak		# Flatpak support
 %bcond_without	fwupd		# firmware support via fwupd
 %bcond_with	eos		# Endless OS updater support (broken as of 3.36.0)
+%bcond_with	libsoup3	# libsoup3 instead of libsoup 2 (must match flatpak)
 %bcond_without	malcontent	# parental control via libmalcontent
 %bcond_with	mogwai		# metered data support using Mogwai
 %bcond_without	packagekit	# PackageKit support
@@ -14,35 +18,36 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	41.4
+Version:	42.1
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/41/%{name}-%{version}.tar.xz
-# Source0-md5:	d978713ec8f0632e62b7e9f5ab41cac5
+Source0:	https://download.gnome.org/sources/gnome-software/42/%{name}-%{version}.tar.xz
+# Source0-md5:	e6b2a687c037ba4a4a918d02128ae990
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
 BuildRequires:	docbook-style-xsl-nons
-%{?with_flatpak:BuildRequires:	flatpak-devel >= 1.0.4}
-%{?with_fwupd:BuildRequires:	fwupd-devel >= 1.0.3}
+%{?with_flatpak:BuildRequires:	flatpak-devel >= 1.9.1}
+%{?with_fwupd:BuildRequires:	fwupd-devel >= 1.5.6}
 BuildRequires:	gdk-pixbuf2-devel >= 2.32.0
 BuildRequires:	gettext-its-metainfo
 BuildRequires:	gettext-tools >= 0.19.7
-BuildRequires:	glib2-devel >= 1:2.56.0
+BuildRequires:	glib2-devel >= 1:2.66.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
-BuildRequires:	gtk+3-devel >= 3.22.4
+BuildRequires:	gtk4-devel >= 4.6
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
-BuildRequires:	json-glib-devel >= 1.2.0
+BuildRequires:	json-glib-devel >= 1.6.0
+BuildRequires:	libadwaita-devel >= 1.0.1
 %{?with_rpm:BuildRequires:	libdnf-devel}
-BuildRequires:	libhandy1-devel >= 1.2.0
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
-BuildRequires:	libsoup-devel >= 2.52.0
+%{!?with_libsoup3:BuildRequires:	libsoup-devel >= 2.52.0}
+%{?with_libsoup3:BuildRequires:	libsoup3-devel >= 3.0}
 BuildRequires:	libxmlb-devel >= 0.1.7
 BuildRequires:	libxslt-progs
-BuildRequires:	meson >= 0.47.0
+BuildRequires:	meson >= 0.55.0
 # mogwai-schedule-client-0
 %{?with_mogwai:BuildRequires:	mogwai-devel >= 0.2.0}
 BuildRequires:	ninja >= 1.5
@@ -62,26 +67,26 @@ BuildRequires:	udev-glib-devel
 # pkgconfig(valgrind)
 BuildRequires:	valgrind
 BuildRequires:	xz
-Requires(post,postun):	glib2 >= 1:2.56.0
+Requires(post,postun):	glib2 >= 1:2.66.0
 Requires(post,postun):	gtk-update-icon-cache
 Requires:	AppStream >= 0.14.0
 %{?with_packagekit:Requires:	PackageKit >= 1.1.0}
-%{?with_flatpak:Requires:	flatpak-libs >= 1.0.4}
-%{?with_fwupd:Requires:	fwupd-libs >= 1.0.3}
+%{?with_flatpak:Requires:	flatpak-libs >= 1.9.1}
+%{?with_fwupd:Requires:	fwupd-libs >= 1.5.6}
 Requires:	gdk-pixbuf2 >= 2.32.0
-Requires:	glib2 >= 1:2.56.0
+Requires:	glib2 >= 1:2.66.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
-Requires:	gtk+3 >= 3.22.4
+Requires:	gtk4 >= 4.6
 Requires:	hicolor-icon-theme
-Requires:	json-glib >= 1.2.0
-Requires:	libhandy1 >= 1.2.0
+Requires:	json-glib >= 1.6.0
+Requires:	libadwaita >= 1.0.1
 %{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
-Requires:	libsoup >= 2.52
+%{!?with_libsoup3:Requires:	libsoup >= 2.52}
 Requires:	libxmlb >= 0.1.7
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-16
+%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-18
 
 %description
 GNOME Software lets you install and update applications and system
@@ -98,9 +103,9 @@ Group:		Development/Libraries
 # doesn't require base
 Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
-Requires:	glib2-devel >= 1:2.56.0
+Requires:	glib2-devel >= 1:2.66.0
 Requires:	gtk+3-devel >= 3.22.4
-Requires:	libsoup-devel >= 2.52.0
+%{!?with_libsoup3:Requires:	libsoup-devel >= 2.52.0}
 
 %description devel
 Header files for GNOME Software plugins development.
@@ -135,6 +140,7 @@ Dokumentacja API wtyczek GNOME Software.
 	%{?with_packagekit:-Dpackagekit=true} \
 	%{?with_rpm:-Drpm_ostree=true} \
 	%{?with_snap:-Dsnap=true} \
+	%{!?with_libsoup3:-Dsoup2=true} \
 	%{!?with_sysprof:-Dsysprof=disabled}
 # packagekit_autoremove?
 
@@ -165,11 +171,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS NEWS README.md
 %attr(755,root,root) %{_bindir}/gnome-software
-/etc/xdg/autostart/gnome-software-service.desktop
+/etc/xdg/autostart/org.gnome.Software.desktop
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
 %dir %{_libdir}/gnome-software
-%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.16
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.18
 %dir %{gs_plugins_dir}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_appstream.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
@@ -178,7 +184,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-pkgdb-collections.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_generic-updates.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-blocklist.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_hardcoded-popular.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_icons.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_modalias.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_os-release.so
@@ -186,14 +191,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance-license.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_repos.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_rewrite-resource.so
-%dir %{_datadir}/app-info
-%dir %{_datadir}/app-info/xmls
-%{_datadir}/app-info/xmls/org.gnome.Software.Featured.xml
 %{_datadir}/dbus-1/services/org.gnome.Software.service
 %{_datadir}/glib-2.0/schemas/org.gnome.software.gschema.xml
 %{_datadir}/gnome-shell/search-providers/org.gnome.Software-search-provider.ini
-%{_datadir}/gnome-software
 %{_datadir}/metainfo/org.gnome.Software.appdata.xml
+%dir %{_datadir}/swcatalog
+%dir %{_datadir}/swcatalog/xml
+%{_datadir}/swcatalog/xml/org.gnome.Software.Featured.xml
+%{_datadir}/swcatalog/xml/org.gnome.Software.Popular.xml
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
 %endif
@@ -215,9 +220,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %if %{with packagekit}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-refine-repos.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit-refresh.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_systemd-updates.so
 %{_datadir}/dbus-1/services/org.freedesktop.PackageKit.service
 %endif
 %if %{with rpm}
@@ -230,7 +232,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/gnome-software-local-file.desktop
 %{_desktopdir}/org.gnome.Software.desktop
 %{_iconsdir}/hicolor/scalable/actions/app-remove-symbolic.svg
-%{_iconsdir}/hicolor/scalable/actions/carousel-arrow-*-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
 %{_iconsdir}/hicolor/scalable/status/software-installed-symbolic.svg
 %{_iconsdir}/hicolor/symbolic/apps/org.gnome.Software-symbolic.svg
