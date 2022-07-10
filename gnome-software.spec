@@ -55,12 +55,12 @@ BuildRequires:	ninja >= 1.5
 BuildRequires:	ostree-devel
 %endif
 BuildRequires:	pkgconfig
-%{?with_snap:BuildRequires:	pkgconfig(snapd-glib) >= 1.50}
 BuildRequires:	polkit-devel
 BuildRequires:	rpm-build >= 4.6
-%{?with_rpm:BuildRequires:	rpm-devel >= 4.?}
+%{?with_rpm:BuildRequires:	rpm-devel >= 1:4.16}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.752
+%{?with_snap:BuildRequires:	snapd-glib-devel >= 1.50}
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-glib-devel
