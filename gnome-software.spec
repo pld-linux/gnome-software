@@ -1,11 +1,10 @@
 # TODO:
-# - rpm-ostree support
 # - use gtk4-update-icon-cache
 #
 # Conditional build:
 %bcond_without	flatpak		# Flatpak support
 %bcond_without	fwupd		# firmware support via fwupd
-%bcond_with	eos		# Endless OS updater support (broken as of 3.36.0)
+%bcond_with	eos		# Endless OS updater support
 %bcond_with	libsoup3	# libsoup3 instead of libsoup 2 (must match flatpak)
 %bcond_without	malcontent	# parental control via libmalcontent
 %bcond_with	mogwai		# metered data support using Mogwai
@@ -18,12 +17,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	42.3
+Version:	42.4
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/42/%{name}-%{version}.tar.xz
-# Source0-md5:	4100b2d8f0f2f1c14fe7eb62b1291ad5
+# Source0-md5:	cfe62f8eb41301f7c0991cc54d41758f
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
