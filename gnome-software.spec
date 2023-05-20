@@ -5,7 +5,7 @@
 %bcond_without	flatpak		# Flatpak support
 %bcond_without	fwupd		# firmware support via fwupd
 %bcond_with	eos		# Endless OS updater support
-%bcond_with	libsoup3	# libsoup3 instead of libsoup 2 (must match flatpak)
+%bcond_with	libsoup2	# libsoup 2 instead of libsoup3 (must match flatpak if flatpak uses libsoup)
 %bcond_without	malcontent	# parental control via libmalcontent
 %bcond_with	mogwai		# metered data support using Mogwai
 %bcond_without	packagekit	# PackageKit support
@@ -42,8 +42,8 @@ BuildRequires:	json-glib-devel >= 1.6.0
 BuildRequires:	libadwaita-devel >= 1.0.1
 %{?with_rpm:BuildRequires:	libdnf-devel}
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
-%{!?with_libsoup3:BuildRequires:	libsoup-devel >= 2.52.0}
-%{?with_libsoup3:BuildRequires:	libsoup3-devel >= 3.0}
+%{?with_libsoup2:BuildRequires:	libsoup-devel >= 2.52.0}
+%{!?with_libsoup2:BuildRequires:	libsoup3-devel >= 3.0}
 BuildRequires:	libxmlb-devel >= 0.1.7
 BuildRequires:	libxslt-progs
 BuildRequires:	meson >= 0.58.0
@@ -58,10 +58,9 @@ BuildRequires:	polkit-devel
 BuildRequires:	rpm-build >= 4.6
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.752
-%if %{with libsoup3}
-%{?with_snap:BuildRequires:	snapd-glib2-devel >= 1.62}
-%else
-%{?with_snap:BuildRequires:	snapd-glib-devel >= 1.50}
+%if %{with snap}
+%{?with_libsoup2:BuildRequires:	snapd-glib-devel >= 1.50}
+%{!?with_libsoup2:BuildRequires:	snapd-glib2-devel >= 1.62}
 %endif
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
@@ -81,7 +80,8 @@ Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.6.0
 Requires:	libadwaita >= 1.0.1
 %{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
-%{!?with_libsoup3:Requires:	libsoup >= 2.52}
+%{?with_libsoup2:Requires:	libsoup >= 2.52}
+%{!?with_libsoup2:Requires:	libsoup3 >= 3.0}
 Requires:	libxmlb >= 0.1.7
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -105,7 +105,8 @@ Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
 Requires:	glib2-devel >= 1:2.70.0
 Requires:	gtk4-devel >= 4.6
-%{!?with_libsoup3:Requires:	libsoup-devel >= 2.52.0}
+%{?with_libsoup2:Requires:	libsoup-devel >= 2.52.0}
+%{!?with_libsoup3:Requires:	libsoup3-devel >= 3.0}
 
 %description devel
 Header files for GNOME Software plugins development.
@@ -140,7 +141,7 @@ Dokumentacja API wtyczek GNOME Software.
 	%{?with_packagekit:-Dpackagekit=true} \
 	%{?with_rpm:-Drpm_ostree=true} \
 	%{?with_snap:-Dsnap=true} \
-	%{!?with_libsoup3:-Dsoup2=true} \
+	%{?with_libsoup2:-Dsoup2=true} \
 	%{!?with_sysprof:-Dsysprof=disabled}
 # packagekit_autoremove?
 
