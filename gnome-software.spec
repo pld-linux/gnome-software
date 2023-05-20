@@ -17,12 +17,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	42.4
+Version:	43.5
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/42/%{name}-%{version}.tar.xz
-# Source0-md5:	cfe62f8eb41301f7c0991cc54d41758f
+Source0:	https://download.gnome.org/sources/gnome-software/43/%{name}-%{version}.tar.xz
+# Source0-md5:	56f85cd918d44e345c2ae4c7bee69d66
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
@@ -32,7 +32,7 @@ BuildRequires:	docbook-style-xsl-nons
 BuildRequires:	gdk-pixbuf2-devel >= 2.32.0
 BuildRequires:	gettext-its-metainfo
 BuildRequires:	gettext-tools >= 0.19.7
-BuildRequires:	glib2-devel >= 1:2.66.0
+BuildRequires:	glib2-devel >= 1:2.70.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
 BuildRequires:	gtk4-devel >= 4.6
@@ -46,7 +46,7 @@ BuildRequires:	libadwaita-devel >= 1.0.1
 %{?with_libsoup3:BuildRequires:	libsoup3-devel >= 3.0}
 BuildRequires:	libxmlb-devel >= 0.1.7
 BuildRequires:	libxslt-progs
-BuildRequires:	meson >= 0.55.0
+BuildRequires:	meson >= 0.58.0
 # mogwai-schedule-client-0
 %{?with_mogwai:BuildRequires:	mogwai-devel >= 0.2.0}
 BuildRequires:	ninja >= 1.5
@@ -56,24 +56,25 @@ BuildRequires:	ostree-devel
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel
 BuildRequires:	rpm-build >= 4.6
-%{?with_rpm:BuildRequires:	rpm-devel >= 1:4.16}
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
 BuildRequires:	rpmbuild(macros) >= 1.752
+%if %{with libsoup3}
+%{?with_snap:BuildRequires:	snapd-glib2-devel >= 1.62}
+%else
 %{?with_snap:BuildRequires:	snapd-glib-devel >= 1.50}
+%endif
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-glib-devel
-# pkgconfig(valgrind)
-BuildRequires:	valgrind
 BuildRequires:	xz
-Requires(post,postun):	glib2 >= 1:2.66.0
+Requires(post,postun):	glib2 >= 1:2.70.0
 Requires(post,postun):	gtk-update-icon-cache
 Requires:	AppStream >= 0.14.0
 %{?with_packagekit:Requires:	PackageKit >= 1.1.0}
 %{?with_flatpak:Requires:	flatpak-libs >= 1.9.1}
 %{?with_fwupd:Requires:	fwupd-libs >= 1.5.6}
 Requires:	gdk-pixbuf2 >= 2.32.0
-Requires:	glib2 >= 1:2.66.0
+Requires:	glib2 >= 1:2.70.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
 Requires:	gtk4 >= 4.6
 Requires:	hicolor-icon-theme
@@ -85,7 +86,7 @@ Requires:	libxmlb >= 0.1.7
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-18
+%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-19
 
 %description
 GNOME Software lets you install and update applications and system
@@ -102,8 +103,8 @@ Group:		Development/Libraries
 # doesn't require base
 Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
-Requires:	glib2-devel >= 1:2.66.0
-Requires:	gtk+3-devel >= 3.22.4
+Requires:	glib2-devel >= 1:2.70.0
+Requires:	gtk4-devel >= 4.6
 %{!?with_libsoup3:Requires:	libsoup-devel >= 2.52.0}
 
 %description devel
@@ -174,11 +175,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
 %dir %{_libdir}/gnome-software
-%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.18
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.19
 %dir %{gs_plugins_dir}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_appstream.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dummy.so
+%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_epiphany.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-langpacks.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fedora-pkgdb-collections.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_generic-updates.so
@@ -193,26 +195,30 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/services/org.gnome.Software.service
 %{_datadir}/glib-2.0/schemas/org.gnome.software.gschema.xml
 %{_datadir}/gnome-shell/search-providers/org.gnome.Software-search-provider.ini
-%{_datadir}/metainfo/org.gnome.Software.appdata.xml
+%{_datadir}/metainfo/org.gnome.Software.metainfo.xml
+%{_datadir}/metainfo/org.gnome.Software.Plugin.Epiphany.metainfo.xml
 %dir %{_datadir}/swcatalog
 %dir %{_datadir}/swcatalog/xml
+%{_datadir}/swcatalog/xml/gnome-pwa-list-foss.xml
+%{_datadir}/swcatalog/xml/gnome-pwa-list-proprietary.xml
+%{_datadir}/swcatalog/xml/org.gnome.Software.Curated.xml
 %{_datadir}/swcatalog/xml/org.gnome.Software.Featured.xml
-%{_datadir}/swcatalog/xml/org.gnome.Software.Popular.xml
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
 %endif
 %if %{with ext_appstream}
 %attr(755,root,root) %{_libexecdir}/gnome-software-install-appstream
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_external-appstream.so
 %{_datadir}/polkit-1/actions/org.gnome.software.external-appstream.policy
 %endif
 %if %{with flatpak}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_flatpak.so
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Flatpak.metainfo.xml
+%{_desktopdir}/gnome-software-local-file-flatpak.desktop
 %endif
 %if %{with fwupd}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_fwupd.so
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Fwupd.metainfo.xml
+%{_desktopdir}/gnome-software-local-file-fwupd.desktop
 %endif
 %if %{with malcontent}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_malcontent.so
@@ -220,6 +226,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with packagekit}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_packagekit.so
 %{_datadir}/dbus-1/services/org.freedesktop.PackageKit.service
+%{_desktopdir}/gnome-software-local-file-packagekit.desktop
 %endif
 %if %{with rpm}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_rpm-ostree.so
@@ -227,12 +234,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with snap}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_snap.so
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Snap.metainfo.xml
+%{_desktopdir}/gnome-software-local-file-snap.desktop
 %endif
-%{_desktopdir}/gnome-software-local-file.desktop
 %{_desktopdir}/org.gnome.Software.desktop
 %{_iconsdir}/hicolor/scalable/actions/app-remove-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
-%{_iconsdir}/hicolor/scalable/status/software-installed-symbolic.svg
 %{_iconsdir}/hicolor/symbolic/apps/org.gnome.Software-symbolic.svg
 %{_mandir}/man1/gnome-software.1*
 
