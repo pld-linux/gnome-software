@@ -18,7 +18,7 @@ Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
 Version:	43.5
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/43/%{name}-%{version}.tar.xz
@@ -154,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 
 # packaged as %doc
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/gnome-software
+
+# not supported by glibc (as of 2.37)
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ie
 
 %find_lang %{name}
 
