@@ -17,15 +17,15 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	43.5
-Release:	2
+Version:	44.3
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/43/%{name}-%{version}.tar.xz
-# Source0-md5:	56f85cd918d44e345c2ae4c7bee69d66
+Source0:	https://download.gnome.org/sources/gnome-software/44/%{name}-%{version}.tar.xz
+# Source0-md5:	5e27c98c6bfed16592c597399cfc6109
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
-%{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.1.0}
+%{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
 BuildRequires:	docbook-style-xsl-nons
 %{?with_flatpak:BuildRequires:	flatpak-devel >= 1.9.1}
 %{?with_fwupd:BuildRequires:	fwupd-devel >= 1.5.6}
@@ -35,11 +35,11 @@ BuildRequires:	gettext-tools >= 0.19.7
 BuildRequires:	glib2-devel >= 1:2.70.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
-BuildRequires:	gtk4-devel >= 4.6
+BuildRequires:	gtk4-devel >= 4.9.2
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.6.0
-BuildRequires:	libadwaita-devel >= 1.0.1
+BuildRequires:	libadwaita-devel >= 1.3
 %{?with_rpm:BuildRequires:	libdnf-devel}
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
 %{?with_libsoup2:BuildRequires:	libsoup-devel >= 2.52.0}
@@ -60,7 +60,7 @@ BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 %if %{with snap}
 %{?with_libsoup2:BuildRequires:	snapd-glib-devel >= 1.50}
-%{!?with_libsoup2:BuildRequires:	snapd-glib2-devel >= 1.62}
+%{!?with_libsoup2:BuildRequires:	snapd-glib-2-devel >= 1.62}
 %endif
 %{?with_sysprof:BuildRequires:	sysprof-devel >= 3.37.2}
 BuildRequires:	tar >= 1:1.22
@@ -69,16 +69,16 @@ BuildRequires:	xz
 Requires(post,postun):	glib2 >= 1:2.70.0
 Requires(post,postun):	gtk-update-icon-cache
 Requires:	AppStream >= 0.14.0
-%{?with_packagekit:Requires:	PackageKit >= 1.1.0}
+%{?with_packagekit:Requires:	PackageKit >= 1.2.5}
 %{?with_flatpak:Requires:	flatpak-libs >= 1.9.1}
 %{?with_fwupd:Requires:	fwupd-libs >= 1.5.6}
 Requires:	gdk-pixbuf2 >= 2.32.0
 Requires:	glib2 >= 1:2.70.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
-Requires:	gtk4 >= 4.6
+Requires:	gtk4 >= 4.9.2
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.6.0
-Requires:	libadwaita >= 1.0.1
+Requires:	libadwaita >= 1.3
 %{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
 %{?with_libsoup2:Requires:	libsoup >= 2.52}
 %{!?with_libsoup2:Requires:	libsoup3 >= 3.0}
@@ -86,7 +86,8 @@ Requires:	libxmlb >= 0.1.7
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-19
+%define		abiver	20
+%define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-%{abiver}
 
 %description
 GNOME Software lets you install and update applications and system
@@ -104,7 +105,7 @@ Group:		Development/Libraries
 Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
 Requires:	glib2-devel >= 1:2.70.0
-Requires:	gtk4-devel >= 4.6
+Requires:	gtk4-devel >= 4.9.2
 %{?with_libsoup2:Requires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup3:Requires:	libsoup3-devel >= 3.0}
 
@@ -179,7 +180,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/gnome-software-cmd
 %attr(755,root,root) %{_libexecdir}/gnome-software-restarter
 %dir %{_libdir}/gnome-software
-%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.19
+%attr(755,root,root) %{_libdir}/gnome-software/libgnomesoftware.so.%{abiver}
 %dir %{gs_plugins_dir}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_appstream.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_dpkg.so
