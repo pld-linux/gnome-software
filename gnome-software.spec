@@ -17,12 +17,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	44.5
+Version:	45.1
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/44/%{name}-%{version}.tar.xz
-# Source0-md5:	bf1e5ec5922223d49de42088c26732a4
+Source0:	https://download.gnome.org/sources/gnome-software/45/%{name}-%{version}.tar.xz
+# Source0-md5:	45818ae09ef40855487278d35dc0f43e
 URL:		https://wiki.gnome.org/Apps/Software
 BuildRequires:	AppStream-devel >= 0.14.0
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
@@ -35,7 +35,7 @@ BuildRequires:	gettext-tools >= 0.19.7
 BuildRequires:	glib2-devel >= 1:2.70.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
-BuildRequires:	gtk4-devel >= 4.9.2
+BuildRequires:	gtk4-devel >= 4.10.0
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.6.0
@@ -75,7 +75,7 @@ Requires:	AppStream >= 0.14.0
 Requires:	gdk-pixbuf2 >= 2.32.0
 Requires:	glib2 >= 1:2.70.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
-Requires:	gtk4 >= 4.9.2
+Requires:	gtk4 >= 4.10.0
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.6.0
 Requires:	libadwaita >= 1.3
@@ -105,7 +105,7 @@ Group:		Development/Libraries
 Requires:	AppStream-devel >= 0.14.0
 Requires:	atk-devel
 Requires:	glib2-devel >= 1:2.70.0
-Requires:	gtk4-devel >= 4.9.2
+Requires:	gtk4-devel >= 4.10.0
 %{?with_libsoup2:Requires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup3:Requires:	libsoup3-devel >= 3.0}
 
@@ -196,7 +196,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_provenance-license.so
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_repos.so
-%attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_rewrite-resource.so
 %{_datadir}/dbus-1/services/org.gnome.Software.service
 %{_datadir}/glib-2.0/schemas/org.gnome.software.gschema.xml
 %{_datadir}/gnome-shell/search-providers/org.gnome.Software-search-provider.ini
