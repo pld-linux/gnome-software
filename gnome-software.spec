@@ -24,24 +24,24 @@ Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/46/%{name}-%{version}.tar.xz
 # Source0-md5:	d98833fd2799db7d70c4d58a8196eaf0
 URL:		https://wiki.gnome.org/Apps/Software
-BuildRequires:	AppStream-devel >= 0.14.0
+BuildRequires:	AppStream-devel >= 0.16.4
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
 BuildRequires:	docbook-style-xsl-nons
 %{?with_flatpak:BuildRequires:	flatpak-devel >= 1.9.1}
-%{?with_fwupd:BuildRequires:	fwupd-devel >= 1.5.6}
+%{?with_fwupd:BuildRequires:	fwupd-devel >= 1.6.2}
 BuildRequires:	gdk-pixbuf2-devel >= 2.32.0
 BuildRequires:	gettext-its-metainfo
 BuildRequires:	gettext-tools >= 0.19.7
 BuildRequires:	glib2-devel >= 1:2.70.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
-BuildRequires:	gtk4-devel >= 4.10.0
+BuildRequires:	gtk4-devel >= 4.12.0
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.6.0
-BuildRequires:	libadwaita-devel >= 1.3
+BuildRequires:	libadwaita-devel >= 1.4.0
 %{?with_rpm:BuildRequires:	libdnf-devel}
-%{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.3.0}
+%{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.5.0}
 %{?with_libsoup2:BuildRequires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup2:BuildRequires:	libsoup3-devel >= 3.0}
 BuildRequires:	libxmlb-devel >= 0.1.7
@@ -68,18 +68,18 @@ BuildRequires:	udev-glib-devel
 BuildRequires:	xz
 Requires(post,postun):	glib2 >= 1:2.70.0
 Requires(post,postun):	gtk-update-icon-cache
-Requires:	AppStream >= 0.14.0
+Requires:	AppStream >= 0.16.4
 %{?with_packagekit:Requires:	PackageKit >= 1.2.5}
 %{?with_flatpak:Requires:	flatpak-libs >= 1.9.1}
-%{?with_fwupd:Requires:	fwupd-libs >= 1.5.6}
+%{?with_fwupd:Requires:	fwupd-libs >= 1.6.2}
 Requires:	gdk-pixbuf2 >= 2.32.0
 Requires:	glib2 >= 1:2.70.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
-Requires:	gtk4 >= 4.10.0
+Requires:	gtk4 >= 4.12.0
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.6.0
-Requires:	libadwaita >= 1.3
-%{?with_malcontent:Requires:	libmalcontent >= 0.3.0}
+Requires:	libadwaita >= 1.4.0
+%{?with_malcontent:Requires:	libmalcontent >= 0.5.0}
 %{?with_libsoup2:Requires:	libsoup >= 2.52}
 %{!?with_libsoup2:Requires:	libsoup3 >= 3.0}
 Requires:	libxmlb >= 0.1.7
@@ -102,10 +102,10 @@ Summary:	Header files for GNOME Software plugins development
 Summary(pl.UTF-8):	Pliki nagłówkowe do tworzenia wtyczek GNOME Software
 Group:		Development/Libraries
 # doesn't require base
-Requires:	AppStream-devel >= 0.14.0
+Requires:	AppStream-devel >= 0.16.4
 Requires:	atk-devel
 Requires:	glib2-devel >= 1:2.70.0
-Requires:	gtk4-devel >= 4.10.0
+Requires:	gtk4-devel >= 4.12.0
 %{?with_libsoup2:Requires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup3:Requires:	libsoup3-devel >= 3.0}
 
@@ -240,6 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/metainfo/org.gnome.Software.Plugin.Snap.metainfo.xml
 %{_desktopdir}/gnome-software-local-file-snap.desktop
 %endif
+%{bash_compdir}/gnome-software
 %{_desktopdir}/org.gnome.Software.desktop
 %{_iconsdir}/hicolor/scalable/actions/app-remove-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
