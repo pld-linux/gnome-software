@@ -17,13 +17,13 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	46.5
+Version:	47.0
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	https://download.gnome.org/sources/gnome-software/46/%{name}-%{version}.tar.xz
-# Source0-md5:	89989c41fa5d9bca76594a8e2bafa3ca
-URL:		https://wiki.gnome.org/Apps/Software
+Source0:	https://download.gnome.org/sources/gnome-software/47/%{name}-%{version}.tar.xz
+# Source0-md5:	255f99af7a4ab2b4cf1a5227ba13a1d5
+URL:		https://apps.gnome.org/Software/
 BuildRequires:	AppStream-devel >= 0.16.4
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
 BuildRequires:	docbook-style-xsl-nons
@@ -32,19 +32,19 @@ BuildRequires:	docbook-style-xsl-nons
 BuildRequires:	gdk-pixbuf2-devel >= 2.32.0
 BuildRequires:	gettext-its-metainfo
 BuildRequires:	gettext-tools >= 0.19.7
-BuildRequires:	glib2-devel >= 1:2.70.0
+BuildRequires:	glib2-devel >= 1:2.76.0
 BuildRequires:	gnome-online-accounts-devel
 BuildRequires:	gsettings-desktop-schemas-devel >= 3.18.0
-BuildRequires:	gtk4-devel >= 4.12.0
+BuildRequires:	gtk4-devel >= 4.13.4
 BuildRequires:	gtk-doc >= 1.11
 BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.6.0
-BuildRequires:	libadwaita-devel >= 1.4.0
+BuildRequires:	libadwaita-devel >= 1.6
 %{?with_rpm:BuildRequires:	libdnf-devel}
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.5.0}
 %{?with_libsoup2:BuildRequires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup2:BuildRequires:	libsoup3-devel >= 3.0}
-BuildRequires:	libxmlb-devel >= 0.1.7
+BuildRequires:	libxmlb-devel >= 0.3.4
 BuildRequires:	libxslt-progs
 BuildRequires:	meson >= 0.58.0
 # mogwai-schedule-client-0
@@ -66,27 +66,27 @@ BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-glib-devel
 BuildRequires:	xz
-Requires(post,postun):	glib2 >= 1:2.70.0
+Requires(post,postun):	glib2 >= 1:2.76.0
 Requires(post,postun):	gtk-update-icon-cache
 Requires:	AppStream >= 0.16.4
 %{?with_packagekit:Requires:	PackageKit >= 1.2.5}
 %{?with_flatpak:Requires:	flatpak-libs >= 1.9.1}
 %{?with_fwupd:Requires:	fwupd-libs >= 1.6.2}
 Requires:	gdk-pixbuf2 >= 2.32.0
-Requires:	glib2 >= 1:2.70.0
+Requires:	glib2 >= 1:2.76.0
 Requires:	gsettings-desktop-schemas >= 3.18.0
-Requires:	gtk4 >= 4.12.0
+Requires:	gtk4 >= 4.13.4
 Requires:	hicolor-icon-theme
 Requires:	json-glib >= 1.6.0
-Requires:	libadwaita >= 1.4.0
+Requires:	libadwaita >= 1.6
 %{?with_malcontent:Requires:	libmalcontent >= 0.5.0}
 %{?with_libsoup2:Requires:	libsoup >= 2.52}
 %{!?with_libsoup2:Requires:	libsoup3 >= 3.0}
-Requires:	libxmlb >= 0.1.7
+Requires:	libxmlb >= 0.3.4
 %{?with_mogwai:Requires:	mogwai >= 0.2.0}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		abiver	20
+%define		abiver	21
 %define		gs_plugins_dir	%{_libdir}/gnome-software/plugins-%{abiver}
 
 %description
@@ -104,8 +104,8 @@ Group:		Development/Libraries
 # doesn't require base
 Requires:	AppStream-devel >= 0.16.4
 Requires:	atk-devel
-Requires:	glib2-devel >= 1:2.70.0
-Requires:	gtk4-devel >= 4.12.0
+Requires:	glib2-devel >= 1:2.76.0
+Requires:	gtk4-devel >= 4.13.4
 %{?with_libsoup2:Requires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup3:Requires:	libsoup3-devel >= 3.0}
 
@@ -159,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 # not supported by glibc (as of 2.37)
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/ie
 
-%find_lang %{name}
+%find_lang %{name} --with-gnome
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -205,8 +205,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/swcatalog/xml
 %{_datadir}/swcatalog/xml/gnome-pwa-list-foss.xml
 %{_datadir}/swcatalog/xml/gnome-pwa-list-proprietary.xml
-%{_datadir}/swcatalog/xml/org.gnome.Software.Curated.xml
-%{_datadir}/swcatalog/xml/org.gnome.Software.Featured.xml
 %if %{with eos}
 %attr(755,root,root) %{gs_plugins_dir}/libgs_plugin_eos-updater.so
 %endif
@@ -242,8 +240,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{bash_compdir}/gnome-software
 %{_desktopdir}/org.gnome.Software.desktop
-%{_iconsdir}/hicolor/scalable/actions/app-remove-symbolic.svg
 %{_iconsdir}/hicolor/scalable/apps/org.gnome.Software.svg
+%{_iconsdir}/hicolor/scalable/categories/system-component-*.svg
 %{_iconsdir}/hicolor/symbolic/apps/org.gnome.Software-symbolic.svg
 %{_mandir}/man1/gnome-software.1*
 
