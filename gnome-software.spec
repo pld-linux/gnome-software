@@ -17,14 +17,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	47.3
+Version:	47.4
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/47/%{name}-%{version}.tar.xz
-# Source0-md5:	8f4a8c37c06e234e7579704b5effd1d0
-Source1:	https://gitlab.gnome.org/mwleeds/gnome-pwa-list/-/archive/c21876545eb970f9c66d25c6e82655e439abb72b/gnome-pwa-list-c21876545eb970f9c66d25c6e82655e439abb72b.tar.bz2
-# Source1-md5:	2559d02daf703b8d3ed3559d91022db0
+# Source0-md5:	457bebc72df0e6e0a3aa96f0ab6815a2
 URL:		https://apps.gnome.org/Software/
 BuildRequires:	AppStream-devel >= 0.16.4
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
@@ -131,8 +129,6 @@ Dokumentacja API wtyczek GNOME Software.
 
 %prep
 %setup -q
-
-%{__tar} xf %{SOURCE1} --strip-components=1 -C subprojects/gnome-pwa-list
 
 %build
 %meson build \
