@@ -57,7 +57,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel
 BuildRequires:	rpm-build >= 4.6
 %{?with_rpm:BuildRequires:	rpm-ostree-devel >= 2019.3}
-BuildRequires:	rpmbuild(macros) >= 1.752
+BuildRequires:	rpmbuild(macros) >= 2.042
 %if %{with snap}
 %{?with_libsoup2:BuildRequires:	snapd-glib-devel >= 1.50}
 %{!?with_libsoup2:BuildRequires:	snapd-glib-2-devel >= 1.62}
@@ -131,7 +131,7 @@ Dokumentacja API wtyczek GNOME Software.
 %setup -q
 
 %build
-%meson build \
+%meson \
 	--default-library=shared \
 	%{?with_ext_appstream:-Dexternal_appstream=true} \
 	%{!?with_flatpak:-Dflatpak=false} \
@@ -146,12 +146,12 @@ Dokumentacja API wtyczek GNOME Software.
 	%{!?with_sysprof:-Dsysprof=disabled}
 # packagekit_autoremove?
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 # packaged as %doc
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/gnome-software
