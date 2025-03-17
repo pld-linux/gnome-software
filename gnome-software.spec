@@ -17,12 +17,12 @@
 Summary:	GNOME Software - install and update applications and system extensions
 Summary(pl.UTF-8):	GNOME Software - instalowanie i uaktualnianie aplikacji oraz rozszerzeń systemu
 Name:		gnome-software
-Version:	47.4
+Version:	47.5
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	https://download.gnome.org/sources/gnome-software/47/%{name}-%{version}.tar.xz
-# Source0-md5:	457bebc72df0e6e0a3aa96f0ab6815a2
+# Source0-md5:	813d6f26cbfd900fd0820b05af83cb95
 URL:		https://apps.gnome.org/Software/
 BuildRequires:	AppStream-devel >= 0.16.4
 %{?with_packagekit:BuildRequires:	PackageKit-devel >= 1.2.5}
