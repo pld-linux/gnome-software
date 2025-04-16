@@ -41,6 +41,8 @@ BuildRequires:	gspell-devel
 BuildRequires:	json-glib-devel >= 1.6.0
 BuildRequires:	libadwaita-devel >= 1.6
 %{?with_rpm:BuildRequires:	libdnf-devel}
+# for tests
+#BuildRequires:	libglib-testing-devel
 %{?with_malcontent:BuildRequires:	libmalcontent-devel >= 0.5.0}
 %{?with_libsoup2:BuildRequires:	libsoup-devel >= 2.52.0}
 %{!?with_libsoup2:BuildRequires:	libsoup3-devel >= 3.0}
@@ -143,7 +145,8 @@ Dokumentacja API wtyczek GNOME Software.
 	%{?with_rpm:-Drpm_ostree=true} \
 	%{?with_snap:-Dsnap=true} \
 	%{?with_libsoup2:-Dsoup2=true} \
-	%{!?with_sysprof:-Dsysprof=disabled}
+	%{!?with_sysprof:-Dsysprof=disabled} \
+	-Dtests=false
 # packagekit_autoremove?
 
 %meson_build
